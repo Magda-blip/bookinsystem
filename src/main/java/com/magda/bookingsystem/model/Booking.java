@@ -2,6 +2,11 @@ package com.magda.bookingsystem.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "bookings")
@@ -20,6 +25,7 @@ public class Booking {
     }
 
     //Name *****************************************
+    @NotBlank(message = "Name is required")
     private String name;
 
     public String getName(){
@@ -29,6 +35,8 @@ public class Booking {
         this.name=newName;
     }
     //Email ******************************************
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
     private String email;
 
     public String getEmail(){
@@ -40,6 +48,8 @@ public class Booking {
     }
 
     //DateTime *************************************
+    @NotNull(message = "Date and time are required")
+    @Future(message = "Booking date must be in the future")
     @Column(name = "date_time")
     private LocalDateTime dateTime;
 
@@ -52,6 +62,8 @@ public class Booking {
     }
 
     //Nr of people ***********************************
+    @NotNull(message = "Number of people is required")
+    @Min(value = 1, message = "There must be at least one person")
     @Column(name = "number_of_people")
     private Integer numberOfPeople;
 
@@ -64,6 +76,7 @@ public class Booking {
     }
 
     //BookingStatus *********************************
+    @NotNull(message = "Booking status is required")
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 

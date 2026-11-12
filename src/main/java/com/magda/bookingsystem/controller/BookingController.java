@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 @RestController
@@ -32,13 +34,12 @@ public class BookingController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Booking> getBookingById(@PathVariable Long id) {
-        return bookingService.getBookingById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Booking booking = bookingService.getBookingById(id);
+        return ResponseEntity.ok(booking);
     }
 
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@RequestBody Booking booking) {
+    public ResponseEntity<Booking> createBooking(@Valid @RequestBody Booking booking) {
         Booking savedBooking = bookingService.createBooking(booking);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedBooking);
@@ -47,7 +48,7 @@ public class BookingController {
     @PutMapping("/{id}")
     public ResponseEntity<Booking> updateBooking(
             @PathVariable Long id,
-            @RequestBody Booking updatedBooking) {
+            @Valid @RequestBody Booking updatedBooking) {
 
         Booking booking = bookingService.updateBooking(id, updatedBooking);
 

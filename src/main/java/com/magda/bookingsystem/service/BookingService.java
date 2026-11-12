@@ -3,8 +3,10 @@ package com.magda.bookingsystem.service;
 
 import com.magda.bookingsystem.model.Booking;
 import com.magda.bookingsystem.repository.BookingRepository;
+import com.magda.bookingsystem.exception.BookingNotFoundException;
+
 import org.springframework.stereotype.Service;
-import java.util.Optional;
+
 
 import java.util.List;
 
@@ -20,8 +22,9 @@ public class BookingService {
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
-    public Optional<Booking> getBookingById(Long id) {
-        return bookingRepository.findById(id);
+    public Booking getBookingById(Long id) {
+        return bookingRepository.findById(id)
+                .orElseThrow(() -> new BookingNotFoundException(id));
     }
 
     public Booking createBooking(Booking newBooking) {
@@ -31,7 +34,7 @@ public class BookingService {
     public Booking updateBooking(Long id, Booking updatedBooking) {
 
         Booking existingBooking = bookingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+                .orElseThrow(() -> new BookingNotFoundException(id));
 
         existingBooking.setName(updatedBooking.getName());
         existingBooking.setEmail(updatedBooking.getEmail());
@@ -44,7 +47,7 @@ public class BookingService {
 
     public void deleteBooking(Long id) {
         if (!bookingRepository.existsById(id)) {
-            throw new RuntimeException("Booking not found");
+            throw new BookingNotFoundException(id);
         }
 
         bookingRepository.deleteById(id);
